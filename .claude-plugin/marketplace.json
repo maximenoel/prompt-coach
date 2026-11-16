@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "prompt-coach",
+  "owner": { "name": "maximenoel" },
+  "metadata": { "description": "Prompt coach mod for Claude Code", "version": "1.0.0" },
+  "plugins": [
+    {
+      "name": "prompt-coach",
+      "source": "./plugins/prompt-coach",
+      "description": "Reviews each prompt with Haiku 5.5 and shows an improved version in a side pane",
+      "version": "0.1.0"
+    }
+  ]
+}
