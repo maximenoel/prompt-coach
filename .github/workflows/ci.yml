@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: manifests are valid JSON
+        run: |
+          for f in .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json plugins/*/hooks/hooks.json; do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "ok $f"
+          done
+      # The Claude Code type files are generated locally and git-ignored, so
+      # CI checks syntax only; run tsc locally for the full type check.
+      - name: TypeScript syntax
+        run: |
+          npm install --no-save --silent typescript@5
+          node -e "
+          const ts = require('typescript'), fs = require('fs')
+          const files = require('child_process').execSync('git ls-files \"*.ts\" \"*.tsx\"').toString().split('\n').filter(Boolean)
+          let bad = 0
+          for (const f of files) {
+            const out = ts.transpileModule(fs.readFileSync(f, 'utf8'), { fileName: f, reportDiagnostics: true, compilerOptions: { jsx: ts.JsxEmit.Preserve } })
+            for (const d of out.diagnostics) { bad++; console.error(f + ': ' + ts.flattenDiagnosticMessageText(d.messageText, '\n')) }
+            console.log('ok ' + f)
+          }
+          process.exit(bad ? 1 : 0)
+          "
