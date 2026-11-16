@@ -19,6 +19,8 @@ Each review sends Haiku a small context block next to your prompt, so it does no
 - files touched by tools in the last 3 exchanges
 - the last 3 exchanges, each cut short (user 400 chars, Claude's answer 600)
 
+Prompts under 3 words ("yes", "ok go") are not reviewed.
+
 The block is capped at 4000 characters (about 1k tokens): the full transcript is never sent. Tune it with the constants at the top of `hooks/register.tsx`.
 
 ## Layout

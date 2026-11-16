@@ -1,6 +1,6 @@
 {
   "name": "prompt-coach",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reviews each prompt with Haiku 5.5 and shows an improved version in a side pane, ready to copy or reuse",
   "types": "./types/index.d.ts"
 }

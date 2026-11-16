@@ -5,7 +5,8 @@ import type { Review } from '../types'
 
 const PANE = 'prompt-coach'
 const MODEL = 'claude-haiku-5-5'
-const MIN_CHARS = 20
+// Shorter prompts ("yes", "ok go") pass unreviewed.
+const MIN_WORDS = 3
 const GOOD_SCORE = 8
 // Context sent with each review, kept small so a review stays cheap: only the
 // last few exchanges, each cut short, plus where the session runs.
@@ -219,7 +220,7 @@ export const register: Register = on => {
     const isTyped =
       !isSkipped && !e.command && !e.isMeta && (e.origin?.kind ?? 'composer') === 'composer'
 
-    if (!isTyped || text.length < MIN_CHARS || !(await read($, isOn))) {
+    if (!isTyped || text.split(/\s+/).length < MIN_WORDS || !(await read($, isOn))) {
       return next(e)
     }
 
@@ -325,7 +326,7 @@ export const register: Register = on => {
           <Text dimColor>
             {isActive
               ? isHold
-                ? `Hold mode: prompts (${MIN_CHARS}+ chars) scoring under ${GOOD_SCORE}/10 are stopped before they reach Claude.`
+                ? `Hold mode: prompts (${MIN_WORDS}+ words) scoring under ${GOOD_SCORE}/10 are stopped before they reach Claude.`
                 : 'Watch mode: prompts go through; Haiku reviews them here.'
               : 'Coach paused.'}
           </Text>
